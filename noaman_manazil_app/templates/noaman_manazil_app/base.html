@@ -1,0 +1,527 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Noaman Website</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="{% block meta_description %} Noaman Housing {% endblock %}" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'noaman_manazil_app/img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'noaman_manazil_app/lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'noaman_manazil_app/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.12.0/sweetalert2.css" integrity="sha512-ISg50yWmBgHf+gNWR8QPKuEzKzltcN5QOhu2CMTRtT+VXShvkhn1fn2I21dYo0Pz4362iyMNezNXIOpOsZkcWw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'noaman_manazil_app/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'noaman_manazil_app/css/style.css' %}" rel="stylesheet">
+
+  
+    
+
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar Start -->
+        <div class="container-fluid nav-bar bg-transparent">
+            <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+                <a href="{% url 'home' %}" class="navbar-brand d-flex align-items-center text-center">
+                    <div class="icon p-2 me-2">
+                        <img class="img-fluid" src="{% static 'noaman_manazil_app/img/icon-deal.png' %}" alt="Icon" style="width: 30px; height: 30px;">
+                    </div>
+                    <h1 class="m-0 text-primary">Makaan</h1>
+                </a>
+                {% if user.is_authenticated %}
+                        <a href="" class="btn btn-warning m-2"><b>Usuario Conectado:</b> {{user.username}}</a>
+                {% endif %}
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                     
+                    <div class="navbar-nav ms-auto">
+                       
+                        <a href="{% url 'home' %}" class="nav-item nav-link active">Home</a>
+                        <a href="about.html" class="nav-item nav-link" hidden>About</a>
+                        <!-- <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Alquiler Vacacional</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="property-list.html" class="dropdown-item">Maroc</a>
+                                <a href="property-type.html" class="dropdown-item">España</a>
+                                <a href="property-agent.html" class="dropdown-item" hidden>Property Agent</a>
+                            </div>
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Compras</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="testimonial.html" class="dropdown-item">Maroc</a>
+                                <a href="404.html" class="dropdown-item">España</a>
+                            </div>
+                        </div> -->
+                        {% for purpose in purposes %}
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">{{ purpose.purpose_name }}</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                {% for country in countries %}
+                                    <!-- <a href="{% url 'buscar_propiedades' purpose.id country.id %}" class="dropdown-item">
+                                        {{ country.country_name }}
+                                    </a> -->
+                                    <a href="{% url 'buscar_propiedades' purpose.id country.id %}"
+                                    class="dropdown-item {% if purpose_selected and country_selected and purpose.id == purpose_selected.id and country.id == country_selected.id %}active{% endif %}">
+                                        {{ country.country_name }}
+                                    </a>
+                                
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
+                    </div>
+                    <!-- <a href="" class="btn btn-primary px-3 d-none d-lg-flex">Add Property</a> -->
+                                {% if user.is_authenticated %}
+                                
+                                <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary ms-3 px-3 d-none d-lg-flex"><i class="fa fa-lock text-dark me-1"></i>Logout</button>
+                                </form>
+                                {% else %}
+                                    <!-- <a class="text-body ps-4" href="{% url 'login' %}"><i class="fa fa-lock text-dark me-1"></i> Signup/login</a> -->
+                                    <a href="{% url 'login' %}" class="nav-item nav-link"><i class="fa fa-lock text-dark me-1"></i> Signup/login</a>
+                                {% endif %}
+                </div>
+            </nav>
+        </div>
+        <!-- Navbar End -->
+        
+
+        <!-- Header Start -->
+        <!-- <div class="container-fluid header bg-white p-0">
+            <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
+                <div class="col-md-6 p-5 mt-lg-5">
+                    <h1 class="display-5 animated fadeIn mb-4">Find A <span class="text-primary">Perfect Home</span> To Live With Your Family</h1>
+                    <p class="animated fadeIn mb-4 pb-2">Vero elitr justo clita lorem. Ipsum dolor at sed stet
+                        sit diam no. Kasd rebum ipsum et diam justo clita et kasd rebum sea elitr.</p>
+                    <a href="" class="btn btn-primary py-3 px-5 me-3 animated fadeIn">Get Started</a>
+                </div>
+                <div class="col-md-6 animated fadeIn">
+                    <div class="owl-carousel header-carousel">
+                        <div class="owl-carousel-item">
+                            <img class="img-fluid" src="{% static 'noaman_manazil_app/img/carousel-1.jpg' %}" alt="">
+                        </div>
+                        <div class="owl-carousel-item">
+                            <img class="img-fluid" src="{% static 'noaman_manazil_app/img/carousel-2.jpg' %}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!-- Header End -->
+        
+<!-- Header Start -->
+<div class="container-fluid header bg-white p-0">
+    <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
+        <div class="col-md-6 p-5 mt-lg-5">
+            {% if header_slide %}
+                <h1 class="display-5 animated fadeIn mb-4">
+                    {{ header_slide.header_slide_title }}
+                    <span class="text-primary">{{ header_slide.header_slide_perfect_home }}</span>
+                    {{ header_slide.header_slide_to_live_with }}
+                </h1>
+                <p class="animated fadeIn mb-4 pb-2">
+                    {{ header_slide.header_slide_description }}
+                </p>
+                {% if header_slide.header_slide_button_link %}
+                    <a href="{{ header_slide.header_slide_button_link }}" class="btn btn-primary py-3 px-5 me-3 animated fadeIn">
+                        {{ header_slide.header_slide_button_text }}
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="col-md-6 animated fadeIn">
+            <div class="owl-carousel header-carousel">
+                {% for img in header_slide.images.all %}
+                    {% if img.header_slide_image_is_active %}
+                        <div class="owl-carousel-item">
+                            <img class="img-fluid" src="{{ img.header_slide_image_image.url }}" alt="Slide Image">
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header End -->
+        
+        
+
+        <!-- Search Start -->
+        <div hidden ="container-fluid bg-primary mb-5 wow fadeIn" data-wow-delay="0.1s" style="padding: 35px;">
+            <div class="container">
+                <div class="row g-2">
+                    <div class="col-md-10">
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control border-0 py-3" placeholder="Search Keyword">
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select border-0 py-3">
+                                    <option selected>Property Type</option>
+                                    <option value="1">Property Type 1</option>
+                                    <option value="2">Property Type 2</option>
+                                    <option value="3">Property Type 3</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select border-0 py-3">
+                                    <option selected>Location</option>
+                                    <option value="1">Location 1</option>
+                                    <option value="2">Location 2</option>
+                                    <option value="3">Location 3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-dark border-0 w-100 py-3">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Search End -->
+
+        {% block content %}
+
+        
+
+        {% endblock %}
+        
+
+        <!-- Footer Start -->
+        <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+            <div class="container py-5">
+                <div class="row g-5">
+                    <div class="col-lg-3 col-md-6">
+                        <h5 class="text-white mb-4">{{ clients_headers_home.clients_headers_home_title_5 }}</h5>
+                        <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>{{ contact_info.contact_info_name|default:"Sin día definido" }}</p>
+                        <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>{{ contact_info.contact_info_phone_number|default:"+012 345 6789" }}</p>
+                        <p class="mb-2"><i class="fa fa-envelope me-3"></i>{{ contact_info.contact_info_email|default:"info@example.com" }}</p>
+                        <div class="d-flex pt-2">
+                            <a class="btn btn-outline-light btn-social" href="{{ contact_info.contact_info_instagram_url }}"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-outline-light btn-social" href="{{ contact_info.contact_info_facebook_url }}"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-light btn-social" href="" hidden><i class="fab fa-youtube"></i></a>
+                            <a class="btn btn-outline-light btn-social" href="" hidden><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <h5 class="text-white mb-4">{{ clients_headers_home.clients_headers_home_title_6 }}</h5>
+                        <a class="btn btn-link text-white-50" href="" hidden>About Us</a>
+                        <a class="btn btn-link text-white-50" href="{% url 'contact' %}">Contact Us</a>
+                        <a class="btn btn-link text-white-50" href="" hidden>Our Services</a>
+                        <a class="btn btn-link text-white-50" href="{% url 'privacy_policy' %}">Privacy Policy</a>
+                        <a class="btn btn-link text-white-50" href="{% url 'privacy_policy' %}">Terms & Condition</a>
+                    </div>
+                    <div class="col-lg-3 col-md-6" hidden>
+                        <h5 class="text-white mb-4">Photo Gallery</h5>
+                        <div class="row g-2 pt-2">
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="{% static 'noaman_manazil_app/img/property-1.jpg' %}" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="{% static 'noaman_manazil_app/img/property-2.jpg' %}" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="{% static 'noaman_manazil_app/img/property-3.jpg' %}" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="{% static 'noaman_manazil_app/img/property-4.jpg' %}" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="{% static 'noaman_manazil_app/img/property-5.jpg' %}" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="{% static 'noaman_manazil_app/img/property-6.jpg' %}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6" hidden>
+                        <h5 class="text-white mb-4">Newsletter</h5>
+                        <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
+                        <div class="position-relative mx-auto" style="max-width: 400px;">
+                            <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
+                            <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="copyright">
+                    <div class="row">
+                        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                            &copy; <a class="border-bottom" href="#">Your Site Name</a>, All Right Reserved. 
+							
+							<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+							Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
+                        </div>
+                        <div class="col-md-6 text-center text-md-end">
+                            <div class="footer-menu">
+                                <a href="{% url 'contact' %}">Home</a>
+                                <a href="{% url 'privacy_policy' %}">Cookies</a>
+                                <a href="{% url 'privacy_policy' %}">Help</a>
+                                <a href="{% url 'privacy_policy' %}">FQAs</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+            {% if not request.COOKIES.cookie_consent %}
+<div id="cookie-banner" style="position: fixed; bottom: 0; width: 100%; background: #333; color: white; text-align: center; padding: 20px; z-index: 1000;">
+    <p>
+        Este sitio web utiliza cookies para personalizar contenido, analizar el tráfico y ofrecer funciones sociales. 
+        Lea más en nuestra <a href="{% url 'privacy_policy' %}" style="color: #4CAF50; text-decoration: underline;">Política de Privacidad</a>.
+    </p>
+    <div style="margin-top: 10px;">
+        <button id="accept-all-cookies" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; margin-right: 10px;">
+            Aceptar todas
+        </button>
+        <button id="reject-all-cookies" style="background: #f44336; color: white; padding: 10px 20px; border: none; cursor: pointer; margin-right: 10px;">
+            Rechazar todas
+        </button>
+        <button id="configure-cookies" style="background: #2196F3; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+            Configurar cookies
+        </button>
+    </div>
+</div>
+{% endif %}
+    
+     <div id="cookie-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 2000; align-items: center; justify-content: center;">
+    <div style="position: relative; width: 90%; max-width: 500px; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+        <h3 style="margin: 0 0 15px; font-size: 1.5rem; color: #333; text-align: center;">Configurar Cookies</h3>
+        <p style="font-size: 1rem; color: #555; text-align: center; margin-bottom: 20px;">
+            Selecciona las categorías de cookies que deseas habilitar:
+        </p>
+        <form id="cookie-settings-form" style="display: flex; flex-direction: column; gap: 15px;">
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 1rem; color: #333;">
+                <input type="checkbox" name="essential" checked disabled>
+                <span>Cookies esenciales (siempre habilitadas)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 1rem; color: #333;">
+                <input type="checkbox" name="analytics">
+                <span>Cookies analíticas</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 1rem; color: #333;">
+                <input type="checkbox" name="marketing">
+                <span>Cookies de marketing</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; font-size: 1rem; color: #333;">
+                <input type="checkbox" name="preferences">
+                <span>Cookies de preferencias</span>
+            </label>
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <button type="button" id="save-cookie-settings" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                    Guardar configuración
+                </button>
+                <button type="button" id="close-cookie-modal" style="background: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+    
+   
+    
+    <!-- JavaScript Libraries -->
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'noaman_manazil_app/lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'noaman_manazil_app/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'noaman_manazil_app/lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'noaman_manazil_app/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.12.0/sweetalert2.min.js" integrity="sha512-iTSP2McqQzzin4TwBzVD2vGe2cKB9VxC6zouXB3J7enM/dblekPHIsJBMm0YGrZnyq1sTv/dGwo7oLY4nuRPGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'noaman_manazil_app/js/main.js' %}"></script>
+    
+
+    <script>
+        document.getElementById('accept-cookies').addEventListener('click', function() {
+            fetch("{% url 'set_cookie_consent' %}", {method: 'GET'})
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        document.getElementById('cookie-banner').style.display = 'none';
+                    }
+                });
+        });
+    </script>
+
+    <script>
+        document.getElementById('accept-all-cookies').addEventListener('click', function() {
+            setCookie('cookie_consent', 'all', 365);
+            document.getElementById('cookie-banner').style.display = 'none';
+        });
+    
+        document.getElementById('reject-all-cookies').addEventListener('click', function() {
+            setCookie('cookie_consent', 'none', 365);
+            document.getElementById('cookie-banner').style.display = 'none';
+        });
+    
+        document.getElementById('configure-cookies').addEventListener('click', function() {
+            //alert('Aquí podrías mostrar un modal o redirigir a una página para configurar cookies por categorías.');
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Configure cookies!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Aquí se muestra el segundo SweetAlert para informar sobre la eliminación
+                    Swal.fire({
+                        title: "Cookies Configurations!",
+                        text: "Your are going to configurate your cookies .",
+                        icon: "success",
+                    }).then((isConfirmed) => {
+                        // Verificar si el usuario ha confirmado el segundo SweetAlert
+                        if (isConfirmed) {
+                            console.log("el id es : " + 0);
+                            // Aquí redireccionamos al usuario para eliminar el registro
+                            //window.location.href = `/eliminar_dentists_image/${id}`; // Asegúrate de que esta URL sea correcta
+                            document.getElementById('cookie-modal').style.display = 'block';
+                        } else {
+                            Swal.fire("Cancelled", "Your cookies configurations has not been set yet :)", "error");
+                        }
+                    });
+                }
+            });
+            //document.getElementById('cookie-modal').style.display = 'block';
+        });
+
+        document.getElementById('close-cookie-modal').addEventListener('click', function() {
+            document.getElementById('cookie-modal').style.display = 'none';
+        });
+    
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        document.getElementById('save-cookie-settings').addEventListener('click', function() {
+            const form = document.getElementById('cookie-settings-form');
+            const settings = {
+                analytics: form.elements['analytics'].checked,
+                marketing: form.elements['marketing'].checked,
+                preferences: form.elements['preferences'].checked,
+            };
+            setCookie('cookie_consent_settings', JSON.stringify(settings), 365);
+        
+            // Cierra el modal
+            document.getElementById('cookie-modal').style.display = 'none';
+
+            // Oculta el banner
+            document.getElementById('cookie-banner').style.display = 'none';
+        });
+        
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+        
+        const cookieSettings = JSON.parse(getCookie('cookie_consent_settings') || '{}');
+        
+        if (cookieSettings.analytics) {
+            console.log('Activando cookies analíticas...');
+            // Aquí puedes cargar tus scripts de Google Analytics, por ejemplo.
+        }
+        
+        if (cookieSettings.marketing) {
+            console.log('Activando cookies de marketing...');
+            // Aquí puedes cargar scripts relacionados con anuncios.
+        }
+        
+        if (cookieSettings.preferences) {
+            console.log('Activando cookies de preferencias...');
+            // Aquí puedes activar cookies personalizadas para el usuario.
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const consentSettings = getCookie('cookie_consent_settings');
+            if (consentSettings) {
+                // Si ya existen configuraciones de cookies, oculta el banner
+                document.getElementById('cookie-banner').style.display = 'none';
+            }
+        });
+        
+        
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.tab-btn').on('click', function(e) {
+        e.preventDefault();
+        var tab = $(this).data('tab');
+
+        $('.tab-btn').removeClass('active');
+        $(this).addClass('active');
+
+        $.ajax({
+            url: '{% url "load_properties_ajax" %}',  // debes tener esta URL en urls.py
+            data: { 'tab': tab },
+            success: function(data) {
+                $('#property-list').html(data.html);
+            }
+        });
+    });
+});
+</script>
+
+
+
+</body>
+
+</html>

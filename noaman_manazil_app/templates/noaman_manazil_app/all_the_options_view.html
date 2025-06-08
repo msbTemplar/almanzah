@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}About the doctor and his cool staff {% endblock %}
+{% block meta_description %} This is the web site of Dr EMD the greatest who ever good {% endblock %}
+{% block content %}
+
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-xl-12 col-lg-12 wow slideInUp" data-wow-delay="0.3s">
+                <h2>All the options </h2>
+                <table class="table table-striped table-hover table-bordered border-primary shadow rounded custom-table">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="text-center">
+                            <a href="{%  url 'list_dentists_image_view' %}" class="btn btn-primary">Look to the Dentists Images</a>
+                        </th>
+                        <th scope="col" class="text-center">
+                            <a href="{%  url 'create_dentist_image_view' %}" class="btn btn-primary ">Introduce the Dentists Images</a>
+                        </th>
+                        <th scope="col" class="text-center">
+                            <a href="{%  url 'list_services_image_view' %}" class="btn btn-primary ">Look to the Services Images</a>
+                        </th>
+                        <th scope="col" class="text-center">
+                            <a href="{%  url 'create_service_image_view' %}" class="btn btn-primary ">Introduce the Services Images</a>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th scope="col" class="text-center">
+                            <a href="{%  url 'dentist_list_view' %}" class="btn btn-primary ">All the Dentists</a>
+                        </th>
+                        <th scope="col" class="text-center">
+                            <a href="{%  url 'service_list_view' %}" class="btn btn-primary ">All the Services</a>
+                        </th>
+                        <th scope="col" class="text-center">
+                            <a href="{%  url 'dentist_form' %}" class="btn btn-primary ">Dentist Data</a>
+                        </th>
+                        <th scope="col" class="text-center">
+                            <a href="{%  url 'appointment_form' %}" class="btn btn-primary ">Appointment Data</a>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th scope="col" class="text-center">
+                            <a href="{%  url 'pricing_form' %}" class="btn btn-primary ">All the Data</a>
+                        </th>
+                        <th scope="col" class="text-center">
+                            <a href="{%  url 'service_form' %}" class="btn btn-primary ">Service Data</a>
+                        </th>
+                        <th scope="col" class="text-center">
+                            <a href="{%  url 'contacts_list' %}" class="btn btn-primary ">Contact Data</a>
+                        </th>
+                        <th scope="col" class="text-center">
+                            
+                        </th>
+                      </tr>
+                      <tr>
+                        <th scope="col" class="text-center" colspan="2">
+                            <a href="{% url 'home' %}" class="btn btn-primary">Home</a>
+                        </th>
+                        <th scope="col" class="text-center" colspan="2">
+                            <a href="{% url 'dentist_admin' %}" class="btn btn-primary">Dentist Admin</a>
+                        </th>
+                    </tr>
+                    
+                    </thead>
+                    <tbody>
+                      
+                      
+                    </tbody>
+                  </table> 
+            
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

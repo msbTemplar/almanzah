@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+   
+   
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+   
+   <style>
+        /* Estilo para la galería */
+        .gallery img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+        .main-image {
+            border-radius: 12px;
+            max-height: 500px;
+            object-fit: cover;
+            width: 100%;
+        }
+        .property-info h1 {
+            font-weight: 700;
+        }
+        .badge-status {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            color: white;
+        }
+        .bg-status-sell { background-color: #dc3545; } /* rojo */
+        .bg-status-rent { background-color: #0d6efd; } /* azul */
+        .bg-status-featured { background-color: #198754; } /* verde */
+
+      
+
+        .flatpickr-day.ocupada {
+        background-color: #dc3545 !important; /* rojo */
+        color: white !important;
+        border-radius: 50% !important;
+    }
+    
+    
+    
+    </style>
+    
+
+<div class="container my-5">
+    <div class="row g-5">
+        
+        <!-- GALERÍA DE IMÁGENES -->
+        <div class="col-lg-7">
+            <div class="position-relative">
+                {% if images %}
+                    <img id="mainImage" src="{{ images.0.propertyImage_image.url }}" alt="Imagen principal" class="main-image mb-3">
+                {% else %}
+                    <img src="{% static 'img/default_property.jpg' %}" alt="Imagen por defecto" class="main-image mb-3">
+                {% endif %}
+
+                {% if property.property_status %}
+                <span class="badge-status 
+                    {% if property.property_status.label|lower == 'sell' %}bg-status-sell
+                    {% elif property.property_status.label|lower == 'rent' %}bg-status-rent
+                    {% else %}bg-status-featured
+                    {% endif %}
+                ">
+                    {{ property.property_status.label }}
+                </span>
+                {% endif %}
+            </div>
+
+            <div class="row gallery g-2">
+                {% for img in images %}
+                <div class="col-3 col-md-2">
+                    <img src="{{ img.propertyImage_image.url }}" alt="Imagen {{ forloop.counter }}" onclick="changeImage(this)">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- INFORMACIÓN DE LA PROPIEDAD -->
+        <div class="col-lg-5">
+            <div class="property-info">
+                <h1 class="mb-3">{{ property.property_title }}</h1>
+                <h3 class="text-primary mb-3">${{ property.property_price|floatformat:2 }}</h3>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-2 text-primary"></i>{{ property.property_location }}, {{ property.property_country.country_name }}</p>
+
+                <div class="mb-4">
+                    <span class="badge bg-warning me-2">{{ property.property_code }}</span>
+                    <span class="badge bg-secondary me-2">{{ property.property_type.label }}</span>
+                    <span class="badge bg-info text-dark">{{ property.property_area }} Sqft</span>
+                </div>
+
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item"><strong>Habitaciones:</strong> {{ property.property_bedrooms }}</li>
+                    <li class="list-group-item"><strong>Baños:</strong> {{ property.property_bathrooms }}</li>
+                    <li class="list-group-item"><strong>Estado:</strong> {{ property.property_status.label }}</li>
+                    <!-- Aquí puedes agregar más campos que tengas -->
+                </ul>
+
+                <h4>Descripción</h4>
+                <p>{{ property.property_description|linebreaks }}</p>  <!-- Si tienes descripción -->
+
+                <a href="{% url 'home' %}" class="btn btn-outline-primary mt-4">Volver al listado</a>
+
+                <form method="POST" action="{% url 'reservar_propiedad' property.id %}" id="reservaForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="fecha_desde" id="input_fecha_desde">
+                    <input type="hidden" name="fecha_hasta" id="input_fecha_hasta">
+                <!-- Campos de fecha desde / hasta -->
+                <div class="row g-3 mt-4">
+                    {% if property.property_status.name|lower == 'rent' %}
+                    <div class="col-md-6">
+                        <label for="fecha_desde" class="form-label">Desde</label>
+                        <input type="text" id="fecha_desde" name="fecha_desde" class="form-control datepicker" placeholder="Selecciona una fecha">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="fecha_hasta" class="form-label">Hasta</label>
+                        <input type="text" id="fecha_hasta" name="fecha_hasta" class="form-control datepicker" placeholder="Selecciona una fecha">
+                    </div>
+                    {% endif %}
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="name_hasta_desde" name="name_hasta_desde" placeholder="Your Name">
+                            <label for="name">Your Name</label>
+                        </div>
+                    </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="email_hasta_desde" name="email_hasta_desde" placeholder="Your Email">
+                                <label for="email">Your Email</label>
+                            </div>
+                    </div>
+                </div>
+                
+                
+                
+
+                <!-- BOTÓN para mostrar el modal de disponibilidad -->
+                <button hidden type="button" class="btn btn-success mt-4" data-bs-toggle="modal" data-bs-target="#calendarModal">
+                    Comprobar disponibilidad y reservar
+                </button>
+                
+                
+                <!-- Botón para abrir el modal de reserva -->
+                <button hidden type="button" class="btn btn-success mt-4" data-bs-toggle="modal" data-bs-target="#calendarModal">
+                    Reservar propiedad
+                </button>
+
+                <button type="submit" class="btn btn-success mt-4">Reservar propiedad</button>
+                </form>
+            
+            </div>
+        </div>
+    
+    </div>
+</div>
+
+<!-- Modal de Calendario -->
+<div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="calendarModalLabel">Selecciona fechas de reserva</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <label for="date-range" class="form-label">Rango de fechas:</label>
+        <input type="text" id="date-range" class="form-control" placeholder="Selecciona desde y hasta">
+
+        <div id="availabilityLegend" class="mt-3">
+          <span class="badge bg-success">Disponible</span>
+          <span class="badge bg-danger">Ocupado</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="confirmReservationModal()">Reservar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+    function changeImage(img) {
+        var mainImage = document.getElementById('mainImage');
+        mainImage.src = img.src;
+    }
+</script>
+
+<!-- En tu script -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    const fechasOcupadas = {{ fechas_ocupadas|safe }};
+    const fechasOcupadasSet = new Set(fechasOcupadas);
+
+    console.log(fechasOcupadas)
+    
+    function esFechaOcupadaStr(fechaStr) {
+        return fechasOcupadas.includes(fechaStr);
+    }
+
+    console.log(fechasOcupadasSet.has("2025-06-01")); // true
+    
+
+    function configurarCalendario(selector) {
+    flatpickr(selector, {
+        //mode: "range",
+        dateFormat: "Y-m-d",
+        disable: fechasOcupadas, 
+        onDayCreate: function(dObj, dStr, fp, dayElem) {
+            const fecha = dayElem.dateObj || dayElem.__flatpickr_date;
+            if (!fecha) return;
+            
+            //const fechaStr = fecha.toISOString().split("T")[0]; // "YYYY-MM-DD"
+
+            function formatDateLocal(date) {
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const d = String(date.getDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            }
+            
+            const fechaStr = formatDateLocal(fecha);
+            
+            if (fechasOcupadas.includes(fechaStr)) {
+                dayElem.setAttribute("style", "background-color: #dc3545; color: white; border-radius: 50%;");
+                dayElem.title = "Fecha ocupada";
+            } else {
+                // Si no está ocupada, mostrar en verde
+                dayElem.setAttribute("style", "background-color: #198754; color: white; border-radius: 50%;");
+                dayElem.title = "Fecha disponible";
+            }
+            if (dayElem.classList.contains("flatpickr-disabled") || dayElem.classList.contains("prevMonthDay") || dayElem.classList.contains("nextMonthDay")) {
+                // No colorear días fuera de mes o deshabilitados
+                return;
+            }
+        
+        }
+    
+    });
+}
+    
+
+    configurarCalendario("#fecha_desde");
+    configurarCalendario("#fecha_hasta");
+    configurarCalendario("#date-range");  // <-- AÑADIR ESTA LÍNEA
+
+
+
+</script>
+
+
+
+{% endblock %}
+
+
+

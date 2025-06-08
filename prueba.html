@@ -1,0 +1,29 @@
+<input type="text" id="miCalendario" placeholder="Selecciona una fecha" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+.flatpickr-day.ocupada {
+    background-color: #dc3545 !important;
+    color: white;
+    border-radius: 50%;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    const fechasOcupadas = [
+        "2025-06-01", "2025-06-02", "2025-06-03", 
+        "2025-06-10", "2025-06-15"
+    ];
+
+    flatpickr("#miCalendario", {
+        dateFormat: "Y-m-d",
+        onDayCreate: function(dObj, dStr, fp, dayElem) {
+            const date = dayElem.dateObj;
+            const dateStr = date.toISOString().split("T")[0];
+
+            if (fechasOcupadas.includes(dateStr)) {
+                dayElem.classList.add("ocupada");
+                dayElem.title = "Fecha ocupada";
+            }
+        }
+    });
+</script>
