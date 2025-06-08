@@ -18,6 +18,11 @@ git branch -M main
 git remote add origin git@github.com:msbTemplar/almanzah.git
 git push -u origin main
 
+https://www.youtube.com/watch?v=CdtQSiC8ZNQ  instalar en pythonanywhere
+
+https://github.com/msbTemplar/almanzah.git
+
+almanzah.pythonanywhere.com
 
 
 

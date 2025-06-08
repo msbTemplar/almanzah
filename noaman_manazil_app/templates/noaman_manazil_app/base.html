@@ -34,7 +34,27 @@
     <link href="{% static 'noaman_manazil_app/css/style.css' %}" rel="stylesheet">
 
   
+    <style> 
+
+        .cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.cookie-banner a {
+    color: white;
+    text-decoration: underline;
+}
     
+    </style>
 
 </head>
 
@@ -307,9 +327,10 @@
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        
 </div>
-            {% if not request.COOKIES.cookie_consent %}
-<div id="cookie-banner" style="position: fixed; bottom: 0; width: 100%; background: #333; color: white; text-align: center; padding: 20px; z-index: 1000;">
+{% if not request.COOKIES.cookie_consent %}
+<div id="cookie-banner" class="cookie-banner" style="position: fixed; bottom: 0; width: 100%; background: #333; color: white; text-align: center; padding: 20px; z-index: 1000;">
     <p>
         Este sitio web utiliza cookies para personalizar contenido, analizar el tráfico y ofrecer funciones sociales. 
         Lea más en nuestra <a href="{% url 'privacy_policy' %}" style="color: #4CAF50; text-decoration: underline;">Política de Privacidad</a>.
