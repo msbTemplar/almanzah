@@ -230,6 +230,13 @@ def buscar_propiedades(request, purpose_id, country_id):
     country = get_object_or_404(Country, pk=country_id)
     
     contact_info = ContactInfo.objects.filter(contact_info_is_active=True).order_by('-contact_info_created_at').first()
+    
+    header_slide = HeaderSlide.objects.filter(header_slide_is_active=True).order_by('-header_slide_created_at').first()
+    
+    clients_headers_home = ClientsHeadersHome.objects.filter(clients_headers_home_is_active=True).order_by('-clients_headers_home_created_at').first()
+    
+    contact = ContactInfo.objects.filter(contact_info_is_active=True).order_by('-contact_info_created_at').first()
+    
 
     propiedades = Property.objects.filter(
         property_purpose=purpose,
@@ -255,6 +262,9 @@ def buscar_propiedades(request, purpose_id, country_id):
         'purposes': Purpose.objects.filter(purpose_is_active=True),
         'countries': Country.objects.filter(country_is_active=True),
         'contact_info': contact_info,
+        'contact': contact,
+        'header_slide': header_slide,
+        'clients_headers_home': clients_headers_home,
         
         
         # NUEVO para testimonios
