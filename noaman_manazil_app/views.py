@@ -84,7 +84,7 @@ def register(request):
                 'Bienvenido a nuestro sitio web',  # Asunto
                 email_content,  # Cuerpo del correo
                 'noreply@tusitio.com',  # Correo electrónico del remitente
-                [user.email,'msb.caixa@gmail.com','msb.tesla@gmail.com', 'msb.coin@gmail.com', 'msb.duck@gmail.com', 'msebti2@gmail.com', 'papioles@gmail.com', 'msb.motive@gmail.com', 'msb.acer@gmail.com'],  # Correo electrónico del usuario registrado
+                [user.email,'noamanmk78@gmail.com','msb.caixa@gmail.com','msb.tesla@gmail.com', 'msb.coin@gmail.com', 'msb.duck@gmail.com', 'msebti2@gmail.com', 'papioles@gmail.com', 'msb.motive@gmail.com', 'msb.acer@gmail.com'],  # Correo electrónico del usuario registrado
             )
 
             return redirect('login')  # Redirige a la página de login después de registrarse
@@ -351,7 +351,7 @@ def contact(request):
                 f'Message from {contact_message_name}',  # Asunto
                 email_content,  # Cuerpo del correo con todos los detalles
                 contact_message_email,  # Correo electrónico del remitente
-                [contact_message_email,'msb.caixa@gmail.com','msb.tesla@gmail.com', 'msb.coin@gmail.com', 'msb.duck@gmail.com', 'msebti2@gmail.com', 'papioles@gmail.com', 'msb.motive@gmail.com', 'msb.acer@gmail.com'],  # Correos de destino
+                [contact_message_email,'noamanmk78@gmail.com','msb.caixa@gmail.com','msb.tesla@gmail.com', 'msb.coin@gmail.com', 'msb.duck@gmail.com', 'msebti2@gmail.com', 'papioles@gmail.com', 'msb.motive@gmail.com', 'msb.acer@gmail.com'],  # Correos de destino
             )
             
             return render(request, 'noaman_manazil_app/contact.html', {'contact_message_name': contact_message_name,'contact_info':contact_info,'fecha_actual': fecha_actual,
@@ -442,7 +442,8 @@ def reservar_propiedad(request, property_id):
         #fecha_hasta = request.POST.get("fecha_hasta")
         name_hasta_desde = request.POST.get("name_hasta_desde")
         email_hasta_desde = request.POST.get("email_hasta_desde")
-
+        phone_hasta_desde = request.POST.get("phone_hasta_desde")
+        
         # Validar que se hayan enviado fechas
         if not fecha_desde or not fecha_hasta:
             messages.error(request, "Por favor selecciona ambas fechas para reservar.")
@@ -461,6 +462,7 @@ def reservar_propiedad(request, property_id):
         Fecha hasta: {fecha_hasta}
         El nombre del solicitante: {name_hasta_desde}
         El email del solicitante: {email_hasta_desde}
+        El telefono del solicitante : {phone_hasta_desde}
         Descripcion: {propiedad.property_description}
         Precio: {propiedad.property_price}
         Estado: {propiedad.property_status}
@@ -476,7 +478,7 @@ def reservar_propiedad(request, property_id):
                 f'Message from {asunto}',  # Asunto
                 mensaje,  # Cuerpo del correo con todos los detalles
                 'msb.duck@gmail.com',  # Correo electrónico del remitente
-                ['msb.caixa@gmail.com','msb.tesla@gmail.com', 'msb.coin@gmail.com', 'msb.duck@gmail.com', 'msebti2@gmail.com', 'papioles@gmail.com', 'msb.motive@gmail.com', 'msb.acer@gmail.com'],  # Correos de destino
+                ['noamanmk78@gmail.com','msb.caixa@gmail.com','msb.tesla@gmail.com', 'msb.coin@gmail.com', 'msb.duck@gmail.com', 'msebti2@gmail.com', 'papioles@gmail.com', 'msb.motive@gmail.com', 'msb.acer@gmail.com'],  # Correos de destino
             )
         
         messages.success(request, "Reserva solicitada correctamente. Te contactaremos pronto.")

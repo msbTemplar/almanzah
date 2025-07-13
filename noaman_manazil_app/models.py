@@ -159,7 +159,7 @@ class PropertyReservation(models.Model):
             current += timedelta(days=1)
             
     def __str__(self):
-        return f"{self.property.property_title} - {self.property.property_price} reservada del {self.start_date} al {self.end_date}"
+        return f"{self.property.property_code} - {self.property.property_title} - {self.property.property_price} reservada del {self.start_date} al {self.end_date}"
     
 
 class Newsletter(models.Model):
