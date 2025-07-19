@@ -455,7 +455,7 @@ def reservar_propiedad(request, property_id):
         asunto = f"Reserva solicitada para la propiedad {propiedad.property_title}"
         mensaje = f"""
         Se ha recibido una solicitud de reserva para la propiedad:
-
+        Codigo Propiedad: {propiedad.property_code}
         Título: {propiedad.property_title}
         Ubicación: {propiedad.property_location}, {propiedad.property_country.country_name}
         Fecha desde: {fecha_desde}
